@@ -1,0 +1,30 @@
+package code;
+
+import javax.swing.JFrame;
+
+public class mainUI extends JFrame  {
+
+
+	private static final long serialVersionUID = 1L;
+
+	public static void main(String[] args) 
+	{
+	 new mainUI();
+	}
+
+	public mainUI() 
+	{
+		Hanoi hanoi = new Hanoi(3);
+		Hanoi hanoi2 = new Hanoi(5);
+		setLayout(null);
+		setSize(850, 900);
+		hanoi.setBounds(0, 0, 520, 350);
+		hanoi2.setBounds(0, 400, 520, 350);
+		add(hanoi);
+		add(hanoi2);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setVisible(true);
+	}
+
+}

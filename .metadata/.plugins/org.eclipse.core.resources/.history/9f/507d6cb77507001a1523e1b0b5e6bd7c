@@ -1,0 +1,148 @@
+package code;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+
+public class Hanoi extends JPanel
+{
+	private static final long serialVersionUID = 1L;	
+	ImageIcon background=new ImageIcon(Hanoi.class.getResource("/resources/background.png"));
+	ImageIcon disc1=new ImageIcon(Hanoi.class.getResource("/resources/disc1.png"));
+    ImageIcon disc2=new ImageIcon(Hanoi.class.getResource("/resources/disc2.png"));
+    ImageIcon disc3=new ImageIcon(Hanoi.class.getResource("/resources/disc3.png"));
+    ImageIcon disc4=new ImageIcon(Hanoi.class.getResource("/resources/disc4.png"));
+    ImageIcon disc5=new ImageIcon(Hanoi.class.getResource("/resources/disc5.png"));
+    ImageIcon disc6=new ImageIcon(Hanoi.class.getResource("/resources/disc6.png"));
+    ImageIcon disc7=new ImageIcon(Hanoi.class.getResource("/resources/disc7.png"));
+    ImageIcon disc8=new ImageIcon(Hanoi.class.getResource("/resources/disc8.png"));
+    ImageIcon disc9=new ImageIcon(Hanoi.class.getResource("/resources/disc9.png"));
+    ImageIcon disc10=new ImageIcon(Hanoi.class.getResource("/resources/disc10.png"));
+    ImageIcon discs[] ={disc1,disc2,disc3,disc4,disc5,disc6,disc7,disc8,disc9,disc10};
+	Vector<Move> log = new Vector<Move>();
+	public int n,moves,i=0;
+	private Tower A, B, C;
+	boolean done = false;
+	/// timers
+    Timer t1,t2,t3;
+    
+    /// constructor
+	public Hanoi(int discs)
+	{
+		 setBorder(new TitledBorder(null, "Tower of Hanoi - "+discs+" discs", TitledBorder.LEADING, TitledBorder.TOP, null, Color.CYAN));
+		 
+	     this.n = discs;
+	     ///torre inicial
+	     this.A = new Tower(90,"A");
+	     ///torre auxiliar
+	     this.B = new Tower(260,"B");
+	     ///torre destino
+	     this.C = new Tower(430,"C");
+		 
+	     this.moves = 0;
+	     
+		 for (int i = 0; i < n; i++)
+	     {
+	        A.pole.push(this.discs[i]);
+	     }
+	     B.pole.setSize(0);
+	     C.pole.setSize(0);
+	     
+	     Begin();
+	     
+		t1 = new Timer(500, new ActionListener ()
+		{
+		    public void actionPerformed(ActionEvent e)
+		    {  
+		    	if(i!=moves)
+				{
+		    	 log.elementAt(i).A.top = log.elementAt(i).A.pole.pop();
+				 repaint();
+				 t2.start(); 
+				 t1.stop(); 
+                }
+				else
+				{
+				 done=true;
+				 repaint();
+				 t1.stop();
+				}
+		    }
+		});
+		
+		t2 = new Timer(500, new ActionListener ()
+		{
+		    public void actionPerformed(ActionEvent e)
+		    {  
+		    	log.elementAt(i).B.top=log.elementAt(i).A.top;
+		    	log.elementAt(i).A.top=null;
+		    	repaint();
+		    	t3.start();
+		    	t2.stop();
+		    }
+		});
+		
+		t3 = new Timer(500, new ActionListener ()
+		{
+		    public void actionPerformed(ActionEvent e)
+		    {  
+		    	log.elementAt(i).B.pole.push(log.elementAt(i).B.top);
+		    	log.elementAt(i).B.top=null;
+		    	repaint();
+		    	t3.stop();
+		    	i++;
+		    	t1.start();
+		    }
+		});	
+		
+		t1.start();
+	}
+	
+	public void paintComponent(Graphics g) ///Método paint
+	{
+	   super.paintComponent(g);
+       g.drawImage(background.getImage(),0,0,getWidth(),getHeight(),null);
+       A.DrawTower(g);
+       B.DrawTower(g);
+       C.DrawTower(g);
+       A.DrawTop(g);
+       B.DrawTop(g);
+       C.DrawTop(g);
+       g.setColor(Color.blue);
+       g.drawString("Move: "+i, 10, 30);  
+       if(done)
+       {
+    	   g.setFont(new Font(null, Font.PLAIN, 20)); 
+    	   g.setColor(Color.green);
+           g.drawString("DONE!!!",(getWidth()/2)-30, 40); 
+       }
+	}
+	
+	public void Begin()/// Método de arranque de recursividad
+	{
+	  Recursivo(n, A, B, C);  
+	}
+ 
+	public void Recursivo(int n, Tower Inicial, Tower Central, Tower Final) ///Método recursivo de hanoi
+	{
+	    if(n==0)
+	    {
+	    	return;
+	    }
+	    else
+	    {
+	     Recursivo(n-1,Inicial,Final,Central);
+	     moves++;
+	     mover(Inicial,Final);
+	     Recursivo(n-1,Central,Inicial,Final);
+	   }
+	}
+    
+	public void mover(Tower a, Tower b) 
+    {
+		log.addElement(new Move(a,b));
+	}
+}

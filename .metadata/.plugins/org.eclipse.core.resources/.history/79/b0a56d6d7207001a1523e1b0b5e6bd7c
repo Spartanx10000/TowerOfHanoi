@@ -1,0 +1,143 @@
+package code;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+
+public class Hanoi extends JPanel
+{
+	private static final long serialVersionUID = 1L;	
+	ImageIcon background=new ImageIcon(Hanoi.class.getResource("/resources/Fondo.png"));
+	ImageIcon Disco1=new ImageIcon(Hanoi.class.getResource("/resources/Disco1.png"));
+    ImageIcon Disco2=new ImageIcon(Hanoi.class.getResource("/resources/Disco2.png"));
+    ImageIcon Disco3=new ImageIcon(Hanoi.class.getResource("/resources/Disco3.png"));
+    ImageIcon Disco4=new ImageIcon(Hanoi.class.getResource("/resources/Disco4.png"));
+    ImageIcon Disco5=new ImageIcon(Hanoi.class.getResource("/resources/Disco5.png"));
+    ImageIcon Disco6=new ImageIcon(Hanoi.class.getResource("/resources/Disco6.png"));
+    ImageIcon Disco7=new ImageIcon(Hanoi.class.getResource("/resources/Disco7.png"));
+    ImageIcon Disco8=new ImageIcon(Hanoi.class.getResource("/resources/Disco8.png"));
+    ImageIcon Disco9=new ImageIcon(Hanoi.class.getResource("/resources/Disco9.png"));
+    ImageIcon Disco10=new ImageIcon(Hanoi.class.getResource("/resources/Disco10.png"));
+    ImageIcon discs[] ={Disco1,Disco2,Disco3,Disco4,Disco5,Disco6,Disco7,Disco8,Disco9,Disco10};
+	Vector<Move> log = new Vector<Move>();
+	public int n,moves,i=0;
+	private Tower izq, cen, der;
+	boolean listo = false;
+    Timer t1,t2,t3;////timers
+    
+	public Hanoi(int discs) ///constructor con el num. de discos
+	{
+		 setBorder(new TitledBorder(null, "Torres de hanoi - "+discs+" discos", TitledBorder.LEADING, TitledBorder.TOP, null, Color.CYAN));
+		 
+	     this.n = discs;
+	     this.izq = new Tower(90,"A");///torre inicial
+	     this.cen = new Tower(260,"B");///torre auxiliar
+	     this.der = new Tower(430,"C");///torre destino
+		 
+	     this.moves = 0;
+	     
+		 for (int i = 0; i < n; i++)
+	     {
+	        izq.pole.push(this.discs[i]);
+	     }
+	     cen.pole.setSize(0);
+	     der.pole.setSize(0);
+	     
+	     Inicia();
+	     
+		t1 = new Timer(500, new ActionListener ()
+		{
+		    public void actionPerformed(ActionEvent e)
+		    {  
+		    	if(i!=moves)
+				{
+		    	 log.elementAt(i).A.top = log.elementAt(i).A.pole.pop();
+				 repaint();
+				 t2.start(); 
+				 t1.stop(); 
+                }
+				else
+				{
+				 listo=true;
+				 repaint();
+				 t1.stop();
+				}
+		    }
+		});
+		
+		t2 = new Timer(500, new ActionListener ()
+		{
+		    public void actionPerformed(ActionEvent e)
+		    {  
+		    	log.elementAt(i).B.top=log.elementAt(i).A.top;
+		    	log.elementAt(i).A.top=null;
+		    	repaint();
+		    	t3.start();
+		    	t2.stop();
+		    }
+		});
+		
+		t3 = new Timer(500, new ActionListener ()
+		{
+		    public void actionPerformed(ActionEvent e)
+		    {  
+		    	log.elementAt(i).B.pole.push(log.elementAt(i).B.top);
+		    	log.elementAt(i).B.top=null;
+		    	repaint();
+		    	t3.stop();
+		    	i++;
+		    	t1.start();
+		    }
+		});	
+		
+		t1.start();
+	}
+	
+	public void paintComponent(Graphics g) ///Método paint
+	{
+	   super.paintComponent(g);
+       g.drawImage(background.getImage(),0,0,getWidth(),getHeight(),null);
+       izq.DrawTower(g);
+       cen.DrawTower(g);
+       der.DrawTower(g);
+       izq.DrawTop(g);
+       cen.DrawTop(g);
+       der.DrawTop(g);
+       g.setColor(Color.blue);
+       g.drawString("Move: "+i, 10, 30);  
+       if(listo)
+       {
+    	   g.setFont(new Font(null, Font.PLAIN, 20)); 
+    	   g.setColor(Color.green);
+           g.drawString("DONE!!!",(getWidth()/2)-30, 40); 
+       }
+	}
+	
+	public void Inicia()/// Método de arranque de recursividad
+	{
+	  Recursivo(n, izq, cen, der);  
+	}
+ 
+	public void Recursivo(int n, Tower Inicial, Tower Central, Tower Final) ///Método recursivo de hanoi
+	{
+	    if(n==0)
+	    {
+	    	return;
+	    }
+	    else
+	    {
+	     Recursivo(n-1,Inicial,Final,Central);
+	     moves++;
+	     mover(Inicial,Final);
+	     Recursivo(n-1,Central,Inicial,Final);
+	   }
+	}
+    
+	public void mover(Tower a, Tower b) 
+    {
+		log.addElement(new Move(a,b));
+	}
+}

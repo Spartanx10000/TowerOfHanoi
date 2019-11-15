@@ -1,0 +1,46 @@
+package Code;
+
+import java.awt.*;
+import java.util.Stack;
+
+import javax.swing.ImageIcon;
+
+   public class Tower
+   { 
+	 //Image of the tower
+     ImageIcon Tower =new ImageIcon(Hanoi.class.getResource("/resources/Tower.png"));
+     
+     public Stack<ImageIcon> pole;///Pila de discos 
+     private int X;///posicion en x de la torre
+     private int Y=300;///posicion en y de la torre
+     private int disco=20;///ancho del disco
+     private int base=150;///largo de la base de la torre
+     private String Nombre;///nombre de la torre
+     public ImageIcon cima;
+     
+     public Tower(int x , String nom) ///constructor de la torre
+     {
+      X = x;
+      Nombre=nom;
+      poste = new Stack<ImageIcon>();
+     }
+     
+     public void dibuja(Graphics g) ///Método que dibuja las torres con los discos que contienen
+     {
+       g.drawImage(Tower.getImage(),X - base / 2,Y - disco*11 ,Tower.getIconWidth(),Tower.getIconHeight(),null);
+	   for (int i = 0; i < poste.size(); i++) ///recorremos el poste de la torre 
+        {
+	     g.drawImage(poste.get(i).getImage(),X-poste.get(i).getIconWidth()/2,Y-poste.get(i).getIconHeight()-(i*disco)-20,poste.get(i).getIconWidth(),poste.get(i).getIconHeight()-1,null);
+	    }
+       g.setColor(Color.black);
+       g.drawString(Nombre, X - base/2 +72, Y-5 );///dibujamos el nombre de la torre
+     } 
+     
+     public void dibujaCima(Graphics g) ///Método que dibuja la cima de la torre
+     {
+       if(cima!=null)
+       {
+    	 g.drawImage(cima.getImage(),X-cima.getIconWidth()/2,30,cima.getIconWidth(),cima.getIconHeight()-1,null);
+       }
+     }
+}
