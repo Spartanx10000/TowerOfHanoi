@@ -1,4 +1,15 @@
 # TowerOfHanoi
+
+<p align="left">  
+   <a>
+      <img alt="Repo-size" src="https://img.shields.io/github/repo-size/Spartanx10000/TowerOfHanoi">
+   </a>
+   
+   <a href="https://github.com/Spartanx10000/PlusConsole/blob/master/LICENSE">
+      <img alt="License" src="https://img.shields.io/github/license/Spartanx10000/TowerOfHanoi">
+   </a>   
+</p>
+
 A graphic representation of the puzzle of tower of hanoi , using a Java swing component to draw the animation and a recursive method to solve the puzzle.
 
 ## Features
